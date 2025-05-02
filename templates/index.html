@@ -2,18 +2,37 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Manitto Checker (Secure)</title>
+  <title>🔐 Find Out Your Manitto Mission</title>
   <style>
-    body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 2rem; text-align: center; }
-    input, button { padding: 0.5rem; margin: 0.5rem; font-size: 1rem; }
-    #result { margin-top: 2rem; font-size: 1.2rem; }
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 2rem;
+      background-color: #f4f4f4;
+    }
+    input, button {
+      padding: 0.6rem 1rem;
+      margin: 0.5rem;
+      font-size: 1rem;
+    }
+    #result {
+      margin-top: 2rem;
+      font-size: 1.1rem;
+    }
+    .input-wrapper {
+      margin-bottom: 1rem;
+    }
   </style>
 </head>
 <body>
-  <h1>🔐 Check Your Manitto (Secure)</h1>
+  <h1>🎁 Find Out Your Manitto Mission</h1>
   <form id="manittoForm">
-    <input type="text" id="nameInput" placeholder="Enter your name" required />
-    <input type="text" id="codeInput" placeholder="Enter your code" required />
+    <div class="input-wrapper">
+      <input type="text" id="nameInput" placeholder="Enter your name exactly" required />
+    </div>
+    <div class="input-wrapper">
+      <input type="text" id="codeInput" placeholder="Enter your 4-digit code" required />
+    </div>
     <button type="submit">Reveal</button>
   </form>
   <div id="result"></div>
@@ -40,7 +59,7 @@
           <ul>${data.missions.map(m => `<li>${m}</li>`).join('')}</ul>
         `;
       } else {
-        resultEl.innerHTML = `<p style="color:red">${data.error}</p>`;
+        resultEl.innerHTML = `<p style="color: red;">${data.error}</p>`;
       }
     });
   </script>
