@@ -2,20 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Manitto Checker</title>
+  <title>Manitto Reveal</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 2rem; background: #f4f4f4; text-align: center; }
-    input, button { padding: 0.5rem 1rem; margin: 0.5rem; font-size: 1rem; }
-    #result { margin-top: 1rem; font-size: 1.2rem; font-weight: bold; }
+    body { font-family: Arial, sans-serif; text-align: center; padding: 2rem; background: #f4f4f4; }
+    input, button { padding: 0.6rem 1rem; margin: 0.5rem; font-size: 1rem; }
+    #result { margin-top: 2rem; font-size: 1.1rem; }
   </style>
 </head>
 <body>
-  <h1>🎁 Find Your Manitto</h1>
+  <h1>🎁 Find Out Your Manitto Mission</h1>
   <form id="manittoForm">
-    <input type="text" id="nameInput" placeholder="Enter your name" required />
-    <button type="submit">Check Manitto</button>
+    <input type="text" id="nameInput" placeholder="Enter your name exactly" required />
+    <button type="submit">Reveal</button>
   </form>
-  <p id="result"></p>
+  <div id="result"></div>
 
   <script>
     document.getElementById("manittoForm").addEventListener("submit", async function(e) {
@@ -27,7 +27,19 @@
         body: JSON.stringify({ name })
       });
       const data = await res.json();
-      document.getElementById("result").innerText = data.manitto ? `Your Manitto is: ${data.manitto}` : data.error;
+
+      const resultEl = document.getElementById("result");
+      if (data.manitto) {
+        resultEl.innerHTML = `
+          <p>Your Manitto is: <strong>${data.manitto}</strong></p>
+          <p>Your missions are:</p>
+          <ul>
+            ${data.missions.map(m => `<li>${m}</li>`).join('')}
+          </ul>
+        `;
+      } else {
+        resultEl.innerHTML = `<p style="color: red;">${data.error}</p>`;
+      }
     });
   </script>
 </body>
