@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Manitto Checker</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 2rem; background: #f4f4f4; text-align: center; }
+    input, button { padding: 0.5rem 1rem; margin: 0.5rem; font-size: 1rem; }
+    #result { margin-top: 1rem; font-size: 1.2rem; font-weight: bold; }
+  </style>
+</head>
+<body>
+  <h1>🎁 Find Your Manitto</h1>
+  <form id="manittoForm">
+    <input type="text" id="nameInput" placeholder="Enter your name" required />
+    <button type="submit">Check Manitto</button>
+  </form>
+  <p id="result"></p>
+
+  <script>
+    document.getElementById("manittoForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+      const name = document.getElementById("nameInput").value.trim();
+      const res = await fetch("/get_manitto", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name })
+      });
+      const data = await res.json();
+      document.getElementById("result").innerText = data.manitto ? `Your Manitto is: ${data.manitto}` : data.error;
+    });
+  </script>
+</body>
+</html>
