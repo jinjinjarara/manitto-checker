@@ -1,5 +1,6 @@
 
 from flask import Flask, request, jsonify, render_template
+import difflib
 
 app = Flask(__name__)
 
@@ -487,10 +488,15 @@ def get_manitto():
     data = request.get_json()
     name = data.get("name", "").strip()
 
-    if name not in manitto_mapping:
-        return jsonify({"error": "This name is not registered."}), 400
+    # Use fuzzy matching to find closest name
+    closest = difflib.get_close_matches(name, manitto_mapping.keys(), n=1, cutoff=0.6)
 
-    entry = manitto_mapping[name]
+    if not closest:
+        return jsonify({"error": "Name not recognized. Please try again or check spelling."}), 400
+
+    real_name = closest[0]
+    entry = manitto_mapping[real_name]
+
     return jsonify({
         "manitto": entry["target"],
         "missions": entry["missions"]
