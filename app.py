@@ -504,3 +504,31 @@ def get_manitto():
 
 if __name__ == "__main__":
     app.run()
+from flask import Flask, request, jsonify, render_template
+import difflib
+
+app = Flask(__name__)
+
+manitto_mapping = { ... }  # 기존 내용
+user_keys = { ... }        # 인증 코드 딕셔너리
+
+@app.route("/get_manitto", methods=["POST"])
+def get_manitto():
+    data = request.get_json()
+    name = data.get("name", "").strip()
+    code = data.get("code", "").strip()
+
+    closest = difflib.get_close_matches(name, user_keys.keys(), n=1, cutoff=0.6)
+    if not closest:
+        return jsonify({"error": "Name not recognized."}), 400
+
+    real_name = closest[0]
+
+    if code != user_keys.get(real_name):
+        return jsonify({"error": "Wrong code. Access denied."}), 403
+
+    entry = manitto_mapping[real_name]
+    return jsonify({
+        "manitto": entry["target"],
+        "missions": entry["missions"]
+    })
