@@ -478,6 +478,67 @@ manitto_mapping = {
         ]
     }
 }
+user_keys = {
+    "Maëlle Garnier": "5227",
+    "안지민": "3554",
+    "방도윤": "7952",
+    "mathias": "7450",
+    "Annabel Heberle": "9786",
+    "Alexandre Andtbacka(LOOP)": "5479",
+    "Valentin Vota": "5312",
+    "김채린": "9031",
+    "Lei Yuchen": "9361",
+    "Anja Zachariasen": "1458",
+    "Malina": "8612",
+    "Calvin Lieu": "1244",
+    "Haidar": "3189",
+    "Quentin": "7538",
+    "Me Cota": "1922",
+    "조현서(LOOP)": "1977",
+    "김한슬": "6610",
+    "음진희": "1695",
+    "leon vicari": "8778",
+    "Antonio Carusillo": "9163",
+    "박수하(LOOP)": "6047",
+    "김다경": "4793",
+    "Annate": "3956",
+    "Ba Lam Nguyen": "4406",
+    "이지원": "4765",
+    "Hannes": "8055",
+    "Gabriel": "6466",
+    "김연우": "2650",
+    "Iris Qoshi": "6275",
+    "Jessica Schenkelberg": "1586",
+    "이민규": "6569",
+    "Carolin Barth": "3243",
+    "틍쿠": "8008",
+    "윤제": "4662",
+    "윤민식": "1817",
+    "박소현": "9577",
+    "Laura Hauser": "2842",
+    "Kellian": "9617",
+    "Vittorio Ventanni": "6873",
+    "Lucas": "6391",
+    "Octave Guerini": "9619",
+    "정수아": "3735",
+    "Louis Moretti": "7023",
+    "신현서": "5641",
+    "Mounia Nasser": "3129",
+    "Robin Ruault": "7605",
+    "Linus Knohl": "9927",
+    "Edanur Atak": "1619",
+    "조은진": "4691",
+    "박소윤": "2135",
+    "Sabrina Barth": "8315",
+    "Alejandre": "2409",
+    "Anna Krikun": "5976",
+    "Nadyrkhano(알리나)": "2447",
+    "Gauthier Sorais": "2789",
+    "오정원": "4679",
+    "Frank": "7260",
+    "김범일": "3730",
+    "태림": "8583"
+}
 
 @app.route("/")
 def index():
@@ -487,43 +548,16 @@ def index():
 def get_manitto():
     data = request.get_json()
     name = data.get("name", "").strip()
-
-    # Use fuzzy matching to find closest name
-    closest = difflib.get_close_matches(name, manitto_mapping.keys(), n=1, cutoff=0.6)
-
-    if not closest:
-        return jsonify({"error": "Name not recognized. Please try again or check spelling."}), 400
-
-    real_name = closest[0]
-    entry = manitto_mapping[real_name]
-
-    return jsonify({
-        "manitto": entry["target"],
-        "missions": entry["missions"]
-    })
-
-if __name__ == "__main__":
-    app.run()
-from flask import Flask, request, jsonify, render_template
-import difflib
-
-app = Flask(__name__)
-
-manitto_mapping = { ... }  # 기존 내용
-user_keys = { ... }        # 인증 코드 딕셔너리
-
-@app.route("/get_manitto", methods=["POST"])
-def get_manitto():
-    data = request.get_json()
-    name = data.get("name", "").strip()
     code = data.get("code", "").strip()
 
+    # Fuzzy match to closest registered name
     closest = difflib.get_close_matches(name, user_keys.keys(), n=1, cutoff=0.6)
     if not closest:
         return jsonify({"error": "Name not recognized."}), 400
 
     real_name = closest[0]
 
+    # Check code
     if code != user_keys.get(real_name):
         return jsonify({"error": "Wrong code. Access denied."}), 403
 
@@ -532,3 +566,6 @@ def get_manitto():
         "manitto": entry["target"],
         "missions": entry["missions"]
     })
+
+if __name__ == "__main__":
+    app.run()
